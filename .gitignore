@@ -1,0 +1,15 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/CarRental.Api/bin/Debug/net6.0
+/CarRental.Api/obj
+/CarRental.Application/bin/Debug/net6.0
+/CarRental.Application/obj
+/CarRental.Contracts/bin/Debug/net6.0
+/CarRental.Contracts/obj
+/CarRental.Domain/bin/Debug/net6.0
+/CarRental.Domain/obj
+/CarRental.Infrastructure/bin/Debug/net6.0
+/CarRental.Infrastructure/obj
