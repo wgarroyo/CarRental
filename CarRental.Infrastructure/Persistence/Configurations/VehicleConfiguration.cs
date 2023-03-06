@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarRental.Infrastructure.Persistence.Configurations;
 
-public class VehicleConfigurations : IEntityTypeConfiguration<Vehicle>
+public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
 {
     public void Configure(EntityTypeBuilder<Vehicle> builder)
     {
@@ -29,16 +29,24 @@ public class VehicleConfigurations : IEntityTypeConfiguration<Vehicle>
                 id => id.Value,
                 value => VehicleBrandId.Create(value));
 
+        builder.Property(m => m.Price)
+            .HasPrecision(10, 3);
+
         builder.Property(m => m.Description)
             .HasMaxLength(100);
 
         builder.Property(m => m.WheelsNumber)
-            .HasPrecision(1,0);
+            .HasPrecision(1, 0);
 
         builder.Property(m => m.Vin)
             .HasMaxLength(10);
+        
+        builder.HasOne(x=> x.VehicleType)
+            .WithMany(x=> x.Vehicles)
+            .HasForeignKey(m => m.VehicleTypeId);
 
-        builder.Property(m => m.Price)
-            .HasPrecision(10,3);
+        builder.HasOne(x => x.VehicleBrand)
+            .WithMany(x => x.Vehicles)
+            .HasForeignKey(m => m.VehicleBrandId);
     }
 }
