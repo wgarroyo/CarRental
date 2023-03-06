@@ -1,5 +1,7 @@
-﻿namespace CarRental.Contracts.Authentication;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CarRental.Contracts.Authentication;
 
 public record LoginRequest(
-    string Email,
-    string Password);
+    [Required, EmailAddress()] string Email,
+    [DataType(DataType.Password), Required] string Password);

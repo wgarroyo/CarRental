@@ -1,42 +1,58 @@
-﻿using CarRental.Application.Services.Authentication;
+﻿using CarRental.Application.Authentication.Commands.Register;
+using CarRental.Application.Authentication.Common;
+using CarRental.Application.Authentication.Queries.Login;
 using CarRental.Contracts.Authentication;
+using CarRental.Domain.Common.Errors;
+using ErrorOr;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRental.Api.Controllers;
 
 [Route("auth")]
-[ApiController]
-public class AuthenticationController : ControllerBase
+[AllowAnonymous]
+public class AuthenticationController : ApiController
 {
-    private readonly IAuthenticationService _authenticationService;
+    private readonly ISender _sender;
+    private readonly IMapper _mapper;
 
-    public AuthenticationController(IAuthenticationService authenticationService)
+    public AuthenticationController(
+        ISender sender,
+        IMapper mapper)
     {
-        _authenticationService = authenticationService;
+        _sender = sender;
+        _mapper = mapper;
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
-        AuthenticationResult authResult = _authenticationService.Register(
-            request.FirstName,
-            request.LastName,
-            request.Email,
-            request.Password);
+        RegisterCommand command = _mapper.Map<RegisterCommand>(request);
+        ErrorOr<AuthenticationResult> authResult = await _sender.Send(command);
 
-        AuthenticationResponse response = new (
-            authResult.Id,
-            authResult.FirstName,
-            authResult.LastName,
-            authResult.Email,
-            authResult.Token);
-
-        return Ok(response);
+        return authResult.Match(
+            authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
+            errors => Problem(errors));
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest request)
+    public async Task<IActionResult> LoginAsync(LoginRequest request)
     {
-        return Ok(request);
+        LoginQuery loginQuery = _mapper.Map<LoginQuery>(request);
+        var authResult = await _sender.Send(loginQuery);
+
+        if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: authResult.FirstError.Description);
+        }
+
+        return authResult.Match(
+            authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
+            errors => Problem(errors));
     }
+
 }

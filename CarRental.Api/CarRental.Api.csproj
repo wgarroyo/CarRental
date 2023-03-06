@@ -7,13 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <PackageReference Include="Mapster" Version="7.3.0" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CarRental.Application\CarRental.Application.csproj" />
     <ProjectReference Include="..\CarRental.Contracts\CarRental.Contracts.csproj" />
+    <ProjectReference Include="..\CarRental.Domain\CarRental.Domain.csproj" />
     <ProjectReference Include="..\CarRental.Infrastructure\CarRental.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Validations\" />
   </ItemGroup>
 
 </Project>

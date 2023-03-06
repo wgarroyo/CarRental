@@ -1,4 +1,4 @@
-﻿namespace CarRental.Application.Services;
+﻿namespace CarRental.Application.Common.Interfaces.Authentication;
 
 public interface IDateTimeProvider
 {

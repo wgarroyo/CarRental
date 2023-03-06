@@ -1,5 +1,5 @@
-﻿using CarRental.Application.Common.Interfaces;
-using CarRental.Application.Services;
+﻿using CarRental.Application.Common.Interfaces.Authentication;
+using CarRental.Domain.UserAggregate;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,7 +21,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtOptions.Value;
     }
 
-    public string GenerateToken(Guid userId, string firstName, string lastName)
+    public string GenerateToken(User user)
     {
         SigningCredentials signingCredentials = new(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
@@ -29,11 +29,11 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
         Claim[] claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub,userId.ToString()),
-            new Claim(JwtRegisteredClaimNames.GivenName, firstName),
-            new Claim(JwtRegisteredClaimNames.FamilyName, lastName),
+            new Claim(JwtRegisteredClaimNames.Sub,user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
+            new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString())
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString())
         };
 
         JwtSecurityToken securityToken = new(

@@ -1,4 +1,4 @@
-﻿using CarRental.Application.Services;
+﻿using CarRental.Application.Common.Interfaces.Authentication;
 
 namespace CarRental.Infrastructure.Services;
 
