@@ -1,5 +1,7 @@
 ﻿using CarRental.Domain.Common.Models;
+using CarRental.Domain.RentalAggregate.Entities;
 using CarRental.Domain.RentalAggregate.ValueObjects;
+using CarRental.Domain.VehicleAggregate;
 using CarRental.Domain.VehicleAggregate.ValueObjects;
 
 namespace CarRental.Domain.RentalAggregate;
@@ -9,8 +11,12 @@ public sealed class Rental : AggregateRoot<RentalId>
     public string Name { get; private set; }
     public string Description { get; private set; }
     public VehicleId VehicleId { get; private set; }
+    public Vehicle Vehicle { get; private set; }
     public ClientId ClientId { get; private set; }
-    public Decimal Price { get; private set; }
+    public Client Client { get; private set; }
+    public decimal Price { get; private set; }
+    public DateTime From { get; private set; }
+    public DateTime To { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
 
@@ -18,7 +24,9 @@ public sealed class Rental : AggregateRoot<RentalId>
         RentalId rentalId,
         VehicleId vehicleId,
         ClientId clientId,
-        Decimal price,
+        decimal price,
+        DateTime from,
+        DateTime to,
         string name,
         string description)
         : base(rentalId)
@@ -26,6 +34,8 @@ public sealed class Rental : AggregateRoot<RentalId>
         VehicleId = vehicleId;
         ClientId = clientId;
         Price = price;
+        From = from;
+        To = to;
         Name = name;
         Description = description;
     }
@@ -33,7 +43,9 @@ public sealed class Rental : AggregateRoot<RentalId>
     public static Rental Create(
         VehicleId vehicleId,
         ClientId clientId,
-        Decimal price,
+        decimal price,
+        DateTime from,
+        DateTime to,
         string name,
         string description)
     {
@@ -42,6 +54,8 @@ public sealed class Rental : AggregateRoot<RentalId>
             vehicleId,
             clientId,
             price,
+            from,
+            to,
             name,
             description);
     }

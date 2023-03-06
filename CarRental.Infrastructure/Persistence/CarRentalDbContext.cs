@@ -1,4 +1,5 @@
 ﻿using CarRental.Domain.RentalAggregate;
+using CarRental.Domain.RentalAggregate.Entities;
 using CarRental.Domain.VehicleAggregate;
 using CarRental.Domain.VehicleAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ public class CarRentalDbContext : DbContext
     public DbSet<Vehicle> Vehicles { get; set; } = null!;
     public DbSet<VehicleType> VehicleTypes { get; set; } = null!;
     public DbSet<VehicleBrand> VehicleBrands { get; set; } = null!;
+    public DbSet<Client> Clients { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

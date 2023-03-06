@@ -1,12 +1,15 @@
 ﻿using CarRental.Domain.Common.Models;
+using CarRental.Domain.RentalAggregate;
 using CarRental.Domain.VehicleAggregate.Entities;
 using CarRental.Domain.VehicleAggregate.ValueObjects;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CarRental.Domain.VehicleAggregate;
 
 public sealed class Vehicle : AggregateRoot<VehicleId>
 {
+    private readonly List<Rental> _rentals = new();
+
+    public IReadOnlyList<Rental> Rentals => _rentals.AsReadOnly();
     public VehicleTypeId VehicleTypeId { get; private set; }
     public VehicleType VehicleType { get; private set; }    
     public VehicleBrandId VehicleBrandId { get; private set; }

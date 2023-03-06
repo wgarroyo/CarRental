@@ -5,6 +5,9 @@ namespace CarRental.Domain.RentalAggregate.Entities;
 
 public sealed class Client : Entity<ClientId>
 {
+    private readonly List<Rental> _rentals = new();
+
+    public IReadOnlyList<Rental> Rentals => _rentals.AsReadOnly();
     public string Name { get; private set; }
     public string MiddleName { get; private set; }
     public string LastName { get; private set; }

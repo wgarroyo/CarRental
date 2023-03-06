@@ -38,5 +38,13 @@ public class RentalConfigurations : IEntityTypeConfiguration<Rental>
 
         builder.Property(m => m.Description)
             .HasMaxLength(100);
+
+        builder.HasOne(x => x.Vehicle)
+            .WithMany(x => x.Rentals)
+            .HasForeignKey(m => m.VehicleId);
+
+        builder.HasOne(x => x.Client)
+            .WithMany(x => x.Rentals)
+            .HasForeignKey(m => m.ClientId);
     }
 }

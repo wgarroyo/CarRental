@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental.Infrastructure.Migrations
 {
     [DbContext(typeof(CarRentalDbContext))]
-    [Migration("20230306201252_InitialCreate")]
+    [Migration("20230306204142_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,35 @@ namespace CarRental.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CarRental.Domain.RentalAggregate.Entities.Client", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SocialNumberId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients", (string)null);
+                });
 
             modelBuilder.Entity("CarRental.Domain.RentalAggregate.Rental", b =>
                 {
@@ -41,6 +70,9 @@ namespace CarRental.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime>("From")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -50,6 +82,9 @@ namespace CarRental.Infrastructure.Migrations
                         .HasPrecision(10, 3)
                         .HasColumnType("decimal(10,3)");
 
+                    b.Property<DateTime>("To")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("UpdatedDateTime")
                         .HasColumnType("datetime2");
 
@@ -57,6 +92,10 @@ namespace CarRental.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Rentals", (string)null);
                 });
@@ -129,6 +168,25 @@ namespace CarRental.Infrastructure.Migrations
                     b.ToTable("Vehicles", (string)null);
                 });
 
+            modelBuilder.Entity("CarRental.Domain.RentalAggregate.Rental", b =>
+                {
+                    b.HasOne("CarRental.Domain.RentalAggregate.Entities.Client", "Client")
+                        .WithMany("Rentals")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarRental.Domain.VehicleAggregate.Vehicle", "Vehicle")
+                        .WithMany("Rentals")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("CarRental.Domain.VehicleAggregate.Vehicle", b =>
                 {
                     b.HasOne("CarRental.Domain.VehicleAggregate.Entities.VehicleBrand", "VehicleBrand")
@@ -148,6 +206,11 @@ namespace CarRental.Infrastructure.Migrations
                     b.Navigation("VehicleType");
                 });
 
+            modelBuilder.Entity("CarRental.Domain.RentalAggregate.Entities.Client", b =>
+                {
+                    b.Navigation("Rentals");
+                });
+
             modelBuilder.Entity("CarRental.Domain.VehicleAggregate.Entities.VehicleBrand", b =>
                 {
                     b.Navigation("Vehicles");
@@ -156,6 +219,11 @@ namespace CarRental.Infrastructure.Migrations
             modelBuilder.Entity("CarRental.Domain.VehicleAggregate.Entities.VehicleType", b =>
                 {
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("CarRental.Domain.VehicleAggregate.Vehicle", b =>
+                {
+                    b.Navigation("Rentals");
                 });
 #pragma warning restore 612, 618
         }
