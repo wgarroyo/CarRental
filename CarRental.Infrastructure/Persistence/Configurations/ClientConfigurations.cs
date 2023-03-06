@@ -1,6 +1,5 @@
 ﻿using CarRental.Domain.RentalAggregate.Entities;
 using CarRental.Domain.RentalAggregate.ValueObjects;
-using CarRental.Domain.VehicleAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

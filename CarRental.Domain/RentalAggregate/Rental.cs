@@ -8,8 +8,6 @@ namespace CarRental.Domain.RentalAggregate;
 
 public sealed class Rental : AggregateRoot<RentalId>
 {
-    public string Name { get; private set; }
-    public string Description { get; private set; }
     public VehicleId VehicleId { get; private set; }
     public Vehicle Vehicle { get; private set; }
     public ClientId ClientId { get; private set; }
@@ -26,9 +24,7 @@ public sealed class Rental : AggregateRoot<RentalId>
         ClientId clientId,
         decimal price,
         DateTime from,
-        DateTime to,
-        string name,
-        string description)
+        DateTime to)
         : base(rentalId)
     {
         VehicleId = vehicleId;
@@ -36,8 +32,6 @@ public sealed class Rental : AggregateRoot<RentalId>
         Price = price;
         From = from;
         To = to;
-        Name = name;
-        Description = description;
     }
 
     public static Rental Create(
@@ -45,9 +39,7 @@ public sealed class Rental : AggregateRoot<RentalId>
         ClientId clientId,
         decimal price,
         DateTime from,
-        DateTime to,
-        string name,
-        string description)
+        DateTime to)
     {
         return new Rental(
             RentalId.CreateUnique(),
@@ -55,9 +47,7 @@ public sealed class Rental : AggregateRoot<RentalId>
             clientId,
             price,
             from,
-            to,
-            name,
-            description);
+            to);
     }
 
 #pragma warning disable CS8618
