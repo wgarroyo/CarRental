@@ -1,4 +1,5 @@
-﻿using CarRental.Contracts.Vehicles;
+﻿using CarRental.Application.Vehicles.Commands.AddVehicle;
+using CarRental.Contracts.Vehicles;
 using CarRental.Domain.VehicleAggregate;
 using Mapster;
 
@@ -8,6 +9,8 @@ namespace CarRental.Api.Common.Mapping
     {
         public void Register(TypeAdapterConfig config)
         {
+            config.NewConfig<AddVehicleRequest, AddVehicleCommand>();
+
             config.NewConfig<Vehicle, VehicleResponse>()
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Type, src => src.VehicleType.Description)

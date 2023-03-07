@@ -1,5 +1,8 @@
-﻿using CarRental.Application.Vehicles.Queries.ListAllVehicles;
+﻿using CarRental.Application.Vehicles.Commands.AddVehicle;
+using CarRental.Application.Vehicles.Queries.GetVehicleById;
+using CarRental.Application.Vehicles.Queries.ListAllVehicles;
 using CarRental.Contracts.Vehicles;
+using CarRental.Domain.VehicleAggregate;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -29,4 +32,28 @@ public class VehiclesController : ApiController
             authResult => Ok(_mapper.Map<List<VehicleResponse>>(vehicles)),
             errors => Problem(errors));
     }
+
+    [HttpGet()]
+    [Route("{id}")]
+    public async Task<IActionResult> GetByIdAsync(Guid id)
+    {
+        var vehicle = await _mediator.Send(new GetVehicleByIdQuery(id));
+
+        return vehicle.Match(
+            authResult => Ok(_mapper.Map<VehicleResponse>(vehicle)),
+            errors => Problem(errors));
+    }
+
+    [HttpPost()]
+    public async Task<IActionResult> AddAsync(AddVehicleRequest request)
+    {
+        AddVehicleCommand command = _mapper.Map<AddVehicleCommand>(request);
+        var vehicle = await _mediator.Send(command);
+
+        return vehicle.Match(
+            authResult => Created(nameof(GetByIdAsync), _mapper.Map<VehicleResponse>(vehicle)),
+            errors => Problem(errors));
+    }
+
+
 }
