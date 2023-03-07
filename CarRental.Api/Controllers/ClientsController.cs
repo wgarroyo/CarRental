@@ -1,5 +1,9 @@
-﻿using CarRental.Application.Clients.Queries.ListAllClients;
+﻿using CarRental.Application.Clients.Commands.AddClient;
+using CarRental.Application.Clients.Queries.GetClientById;
+using CarRental.Application.Clients.Queries.ListAllClients;
 using CarRental.Contracts.Clients;
+using CarRental.Domain.RentalAggregate.Entities;
+using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace CarRental.Api.Controllers
 {
     [Route("[controller]")]
-    [ApiController]
     public class ClientsController : ApiController
     {
         private readonly IMapper _mapper;
@@ -32,5 +35,29 @@ namespace CarRental.Api.Controllers
 
 
         }
+
+        [HttpGet()]
+        [Route("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+            var client = await _mediator.Send(new GetClientByIdQuery(id));
+
+            return client.Match(
+                authResult => Ok(_mapper.Map<ClientResponse>(client)),
+                errors => Problem(errors));
+
+        }
+
+        [HttpPost()]
+        public async Task<IActionResult> AddAsync(AddClientRequest request)
+        {
+            AddClientCommand command = _mapper.Map<AddClientCommand>(request);
+            ErrorOr<Client> client = await _mediator.Send(command);
+
+            return client.Match(
+                authResult => Created(nameof(GetByIdAsync),_mapper.Map<ClientResponse>(client)),
+                errors => Problem(errors));
+        }
+
     }
 }

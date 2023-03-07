@@ -36,6 +36,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{7634
 		ListClients.http = ListClients.http
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rentals", "Rentals", "{B11B08CB-B356-411D-9589-A50D4F6C5C7F}"
+	ProjectSection(SolutionItems) = preProject
+		ListRentals.http = ListRentals.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +75,7 @@ Global
 		{B3BD1F72-7A03-44ED-8472-668517833EB1} = {A3ACF92E-1ED3-45AA-AB61-DC82A59DFF07}
 		{2D83578A-7EC9-4760-90C2-B223E5DC7706} = {A3ACF92E-1ED3-45AA-AB61-DC82A59DFF07}
 		{7634098D-B92D-450F-AF31-5DD76D7D1C74} = {A3ACF92E-1ED3-45AA-AB61-DC82A59DFF07}
+		{B11B08CB-B356-411D-9589-A50D4F6C5C7F} = {A3ACF92E-1ED3-45AA-AB61-DC82A59DFF07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16D875A3-E758-473F-81D9-058F07F0AD80}
