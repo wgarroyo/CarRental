@@ -27,5 +27,8 @@ public class ClientConfigurations : IEntityTypeConfiguration<Client>
 
         builder.Property(m => m.LastName)
             .HasMaxLength(100);
+
+        builder.Property(m => m.SocialNumberId)
+            .HasMaxLength(20);
     }
 }
