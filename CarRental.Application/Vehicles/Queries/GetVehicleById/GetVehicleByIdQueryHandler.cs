@@ -1,19 +1,34 @@
-﻿using CarRental.Domain.VehicleAggregate;
+﻿using CarRental.Application.Common.Interfaces.Persistence;
+using CarRental.Domain.VehicleAggregate;
+using CarRental.Domain.VehicleAggregate.ValueObjects;
 using ErrorOr;
+using CarRental.Domain.Common.Errors;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRental.Application.Vehicles.Queries.GetVehicleById;
 
 public class GetVehicleByIdQueryHandler : IRequestHandler<GetVehicleByIdQuery, ErrorOr<Vehicle>>
 {
-
-    public GetVehicleByIdQueryHandler()
+    private readonly IDataContext _dataContext = null!;
+    public GetVehicleByIdQueryHandler(IDataContext dataContext)
     {
-
+        _dataContext = dataContext;
     }
 
     public async Task<ErrorOr<Vehicle>> Handle(GetVehicleByIdQuery query, CancellationToken cancellationToken)
     {
-        return Vehicle.Create(null, null, string.Empty, 0, string.Empty, 0);
+        Vehicle? vehicle = await _dataContext
+            .Vehicles
+            .Include(x => x.VehicleBrand)
+            .Include(x => x.VehicleType)
+            .FirstOrDefaultAsync(x => x.Id == VehicleId.Create(query.Id), cancellationToken);
+
+        if (vehicle is null)
+        {
+            return Errors.Vehicle.NotFound;
+        }
+
+        return vehicle;
     }
 }

@@ -8,7 +8,7 @@ namespace CarRental.Application.Vehicles.Queries.ListAllVehicles;
 
 public class ListAllVehiclesQueryHandler : IRequestHandler<ListAllVehiclesQuery, ErrorOr<List<Vehicle>>>
 {
-    private readonly IDataContext _dataContext;
+    private readonly IDataContext _dataContext = null!;
     public ListAllVehiclesQueryHandler(IDataContext dataContext)
     {
         _dataContext = dataContext;
@@ -16,6 +16,10 @@ public class ListAllVehiclesQueryHandler : IRequestHandler<ListAllVehiclesQuery,
 
     public async Task<ErrorOr<List<Vehicle>>> Handle(ListAllVehiclesQuery query, CancellationToken cancellationToken)
     {
-        return await _dataContext.Vehicles.ToListAsync(cancellationToken);
+        return await _dataContext
+            .Vehicles
+            .Include(x => x.VehicleBrand)
+            .Include(x => x.VehicleType)
+            .ToListAsync(cancellationToken);
     }
 }

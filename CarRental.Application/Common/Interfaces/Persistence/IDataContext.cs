@@ -14,7 +14,7 @@ public interface IDataContext
     DbSet<VehicleBrand> VehicleBrands { get; set; }
     DbSet<Client> Clients { get; set; }
 
-    void BeginTransaction();
-    void Commit();
-    void Rollback();
+    Task BeginTransactionAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
 }

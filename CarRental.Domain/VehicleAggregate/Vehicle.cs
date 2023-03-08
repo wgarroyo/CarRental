@@ -11,25 +11,26 @@ public sealed class Vehicle : AggregateRoot<VehicleId>
 
     public IReadOnlyList<Rental> Rentals => _rentals.AsReadOnly();
     public VehicleTypeId VehicleTypeId { get; private set; }
-    public VehicleType VehicleType { get; private set; }    
+    public VehicleType VehicleType { get; private set; } = null!;
     public VehicleBrandId VehicleBrandId { get; private set; }
-    public VehicleBrand VehicleBrand { get; private set; }
+    public VehicleBrand VehicleBrand { get; private set; } = null!;
     public string Description { get; private set; }
     public uint WheelsNumber { get; private set; }
     public string Vin { get; private set; }
     public decimal Price { get; private set; }
 
-    private Vehicle(
-        VehicleTypeId vehicleTypeId,
-        VehicleBrandId vehicleBrandId,
-        string description,
-        uint wheelsNumber,
-        string vin,
-        decimal price)
+    private Vehicle(VehicleType vehicleType,
+                    VehicleBrand vehicleBrand,
+                    string description,
+                    uint wheelsNumber,
+                    string vin,
+                    decimal price)
         : base(VehicleId.CreateUnique())
     {
-        VehicleTypeId = vehicleTypeId;
-        VehicleBrandId = vehicleBrandId;
+        VehicleType = vehicleType;
+        VehicleBrand = vehicleBrand;
+        VehicleTypeId = vehicleType.Id;
+        VehicleBrandId = vehicleBrand.Id;
         Description = description;
         WheelsNumber = wheelsNumber;
         Vin = vin;
@@ -37,14 +38,14 @@ public sealed class Vehicle : AggregateRoot<VehicleId>
     }
 
     public static Vehicle Create(
-        VehicleTypeId vehicleTypeId,
-        VehicleBrandId vehicleBrandId,
+        VehicleType vehicleType,
+        VehicleBrand vehicleBrand,
         string description,
         uint wheelsNumber,
         string vin,
         decimal price)
     {
-        return new Vehicle(vehicleTypeId, vehicleBrandId, description, wheelsNumber, vin, price);
+        return new Vehicle(vehicleType, vehicleBrand, description, wheelsNumber, vin, price);
     }
 #pragma warning disable CS8618
     private Vehicle()

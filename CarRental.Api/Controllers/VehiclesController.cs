@@ -2,6 +2,7 @@
 using CarRental.Application.Vehicles.Queries.GetVehicleById;
 using CarRental.Application.Vehicles.Queries.ListAllVehicles;
 using CarRental.Contracts.Vehicles;
+using CarRental.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ public class VehiclesController : ApiController
     private readonly ISender _mediator;
 
     public VehiclesController(
-        IMapper mapper, 
+        IMapper mapper,
         ISender mediator)
     {
         _mapper = mapper;
@@ -26,7 +27,7 @@ public class VehiclesController : ApiController
     public async Task<IActionResult> ListAllAsync()
     {
         var vehicles = await _mediator.Send(new ListAllVehiclesQuery());
-        
+
         return vehicles.Match(
             authResult => Ok(_mapper.Map<List<VehicleResponse>>(vehicles.Value)),
             errors => Problem(errors));
@@ -36,10 +37,18 @@ public class VehiclesController : ApiController
     [Route("{id}")]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
-        var vehicle = await _mediator.Send(new GetVehicleByIdQuery(id));
+        var vehicleResult = await _mediator.Send(new GetVehicleByIdQuery(id));
 
-        return vehicle.Match(
-            authResult => Ok(_mapper.Map<VehicleResponse>(vehicle)),
+        if (vehicleResult.IsError && vehicleResult.FirstError == Errors.Vehicle.NotFound)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: vehicleResult.FirstError.Description);
+        }
+
+
+        return vehicleResult.Match(
+            authResult => Ok(_mapper.Map<VehicleResponse>(vehicleResult.Value)),
             errors => Problem(errors));
     }
 
@@ -47,10 +56,19 @@ public class VehiclesController : ApiController
     public async Task<IActionResult> AddAsync(AddVehicleRequest request)
     {
         AddVehicleCommand command = _mapper.Map<AddVehicleCommand>(request);
-        var vehicle = await _mediator.Send(command);
+        var vehicleResult = await _mediator.Send(command);
 
-        return vehicle.Match(
-            authResult => Created(nameof(GetByIdAsync), _mapper.Map<VehicleResponse>(vehicle)),
+        if (vehicleResult.IsError && (
+            vehicleResult.FirstError == Errors.VehicleType.NotFound
+            || vehicleResult.FirstError == Errors.VehicleBrand.NotFound))
+        {
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: vehicleResult.FirstError.Description);
+        }
+
+        return vehicleResult.Match(
+            authResult => Created(nameof(GetByIdAsync), _mapper.Map<VehicleResponse>(vehicleResult.Value)),
             errors => Problem(errors));
     }
 

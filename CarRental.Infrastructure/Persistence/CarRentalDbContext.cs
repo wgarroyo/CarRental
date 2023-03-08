@@ -31,28 +31,33 @@ public class CarRentalDbContext : DbContext, IDataContext
         base.OnModelCreating(modelBuilder);
     }
 
-    public void BeginTransaction()
+    public async Task BeginTransactionAsync()
     {
-        _transaction = Database.BeginTransaction();
+        _transaction = await Database.BeginTransactionAsync();
     }
 
-    public void Commit()
+    public async Task CommitAsync()
     {
         try
         {
-            SaveChanges();
-            _transaction.Commit();
+            await SaveChangesAsync();
+            if (_transaction is not null)
+                await _transaction.CommitAsync();
         }
         finally
         {
-            _transaction.Dispose();
+            if (_transaction is not null)
+                await _transaction.DisposeAsync();
         }
     }
 
-    public void Rollback()
+    public async Task RollbackAsync()
     {
-        _transaction.Rollback();
-        _transaction.Dispose();
+        if (_transaction is not null)
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+        }
     }
 
 }
