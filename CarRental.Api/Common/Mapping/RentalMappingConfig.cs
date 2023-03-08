@@ -9,7 +9,7 @@ namespace CarRental.Api.Common.Mapping
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<Rental, RentalResponse>()
-                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.Id, src => src.Id.Value)
                 .Map(dest => dest.VehicleType, src => src.Vehicle.VehicleType.Description)
                 .Map(dest => dest.VehicleBrand, src => src.Vehicle.VehicleBrand.Description)
                 .Map(dest => dest.VehicleDescription, src => src.Vehicle.Description)

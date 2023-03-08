@@ -2,7 +2,6 @@
 using CarRental.Application.Vehicles.Queries.GetVehicleById;
 using CarRental.Application.Vehicles.Queries.ListAllVehicles;
 using CarRental.Contracts.Vehicles;
-using CarRental.Domain.VehicleAggregate;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +28,7 @@ public class VehiclesController : ApiController
         var vehicles = await _mediator.Send(new ListAllVehiclesQuery());
         
         return vehicles.Match(
-            authResult => Ok(_mapper.Map<List<VehicleResponse>>(vehicles)),
+            authResult => Ok(_mapper.Map<List<VehicleResponse>>(vehicles.Value)),
             errors => Problem(errors));
     }
 

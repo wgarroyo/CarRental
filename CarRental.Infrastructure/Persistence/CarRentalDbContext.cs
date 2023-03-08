@@ -1,13 +1,17 @@
-﻿using CarRental.Domain.RentalAggregate;
+﻿using CarRental.Application.Common.Interfaces.Persistence;
+using CarRental.Domain.RentalAggregate;
 using CarRental.Domain.RentalAggregate.Entities;
 using CarRental.Domain.VehicleAggregate;
 using CarRental.Domain.VehicleAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CarRental.Infrastructure.Persistence;
 
-public class CarRentalDbContext : DbContext
+public class CarRentalDbContext : DbContext, IDataContext
 {
+    private IDbContextTransaction _transaction = null!;
+
     public CarRentalDbContext(DbContextOptions<CarRentalDbContext> options)
         : base(options)
     {
@@ -26,4 +30,29 @@ public class CarRentalDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+
+    public void BeginTransaction()
+    {
+        _transaction = Database.BeginTransaction();
+    }
+
+    public void Commit()
+    {
+        try
+        {
+            SaveChanges();
+            _transaction.Commit();
+        }
+        finally
+        {
+            _transaction.Dispose();
+        }
+    }
+
+    public void Rollback()
+    {
+        _transaction.Rollback();
+        _transaction.Dispose();
+    }
+
 }

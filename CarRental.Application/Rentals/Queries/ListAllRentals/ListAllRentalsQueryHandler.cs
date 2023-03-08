@@ -1,18 +1,21 @@
-﻿using CarRental.Domain.RentalAggregate;
+﻿using CarRental.Application.Common.Interfaces.Persistence;
+using CarRental.Domain.RentalAggregate;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRental.Application.Rentals.Queries.ListAllRentals;
 
 public class ListAllRentalsQueryHandler : IRequestHandler<ListAllRentalsQuery, ErrorOr<List<Rental>>>
 {
-    public ListAllRentalsQueryHandler()
+    private readonly IDataContext _dataContext;
+    public ListAllRentalsQueryHandler(IDataContext dataContext)
     {
-
+        _dataContext = dataContext;
     }
 
     public async Task<ErrorOr<List<Rental>>> Handle(ListAllRentalsQuery query, CancellationToken cancellationToken)
     {
-        return new List<Rental>();
+        return await _dataContext.Rentals.ToListAsync(cancellationToken);
     }
 }

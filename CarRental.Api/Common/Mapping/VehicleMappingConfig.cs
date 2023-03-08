@@ -12,7 +12,7 @@ namespace CarRental.Api.Common.Mapping
             config.NewConfig<AddVehicleRequest, AddVehicleCommand>();
 
             config.NewConfig<Vehicle, VehicleResponse>()
-                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.Id, src => src.Id.Value)
                 .Map(dest => dest.Type, src => src.VehicleType.Description)
                 .Map(dest => dest.Brand, src => src.VehicleBrand.Description)
                 .Map(dest => dest.Description, src => src.Description)

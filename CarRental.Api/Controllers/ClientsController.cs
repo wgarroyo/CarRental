@@ -30,10 +30,8 @@ namespace CarRental.Api.Controllers
             var clients = await _mediator.Send(new ListAllClientsQuery());
 
             return clients.Match(
-                authResult => Ok(_mapper.Map<List<ClientResponse>>(clients)),
+                authResult => Ok(_mapper.Map<List<ClientResponse>>(clients.Value.ToList())),
                 errors => Problem(errors));
-
-
         }
 
         [HttpGet()]
@@ -45,7 +43,6 @@ namespace CarRental.Api.Controllers
             return client.Match(
                 authResult => Ok(_mapper.Map<ClientResponse>(client)),
                 errors => Problem(errors));
-
         }
 
         [HttpPost()]
