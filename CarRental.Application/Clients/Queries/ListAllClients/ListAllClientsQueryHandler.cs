@@ -8,7 +8,7 @@ namespace CarRental.Application.Clients.Queries.ListAllClients;
 
 public class ListAllClientsQueryHandler : IRequestHandler<ListAllClientsQuery, ErrorOr<List<Client>>>
 {
-    private readonly IDataContext _dataContext;
+    private readonly IDataContext _dataContext = null!;
     public ListAllClientsQueryHandler(IDataContext dataContext)
     {
         _dataContext = dataContext;

@@ -1,7 +1,9 @@
 ﻿using CarRental.Application.Clients.Commands.AddClient;
+using CarRental.Application.Clients.Commands.RemoveClient;
 using CarRental.Application.Clients.Queries.GetClientById;
 using CarRental.Application.Clients.Queries.ListAllClients;
 using CarRental.Contracts.Clients;
+using CarRental.Domain.Common.Errors;
 using CarRental.Domain.RentalAggregate.Entities;
 using ErrorOr;
 using MapsterMapper;
@@ -38,10 +40,17 @@ namespace CarRental.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var client = await _mediator.Send(new GetClientByIdQuery(id));
+            var clientResult = await _mediator.Send(new GetClientByIdQuery(id));
 
-            return client.Match(
-                authResult => Ok(_mapper.Map<ClientResponse>(client)),
+            if (clientResult.IsError && clientResult.FirstError == Errors.Client.NotFound)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: clientResult.FirstError.Description);
+            }
+
+            return clientResult.Match(
+                authResult => Ok(_mapper.Map<ClientResponse>(clientResult.Value)),
                 errors => Problem(errors));
         }
 
@@ -52,7 +61,25 @@ namespace CarRental.Api.Controllers
             ErrorOr<Client> client = await _mediator.Send(command);
 
             return client.Match(
-                authResult => Created(nameof(GetByIdAsync),_mapper.Map<ClientResponse>(client)),
+                authResult => Created(nameof(GetByIdAsync), _mapper.Map<ClientResponse>(client.Value)),
+                errors => Problem(errors));
+        }
+
+        [HttpDelete()]
+        [Route("{id}")]
+        public async Task<IActionResult> RemoveAsync(Guid id)
+        {
+            var clientResult = await _mediator.Send(new RemoveClientCommand(id));
+
+            if (clientResult.IsError && clientResult.FirstError == Errors.Client.NotFound)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: clientResult.FirstError.Description);
+            }
+
+            return clientResult.Match(
+                authResult => Ok(_mapper.Map<ClientResponse>(clientResult.Value)),
                 errors => Problem(errors));
         }
 

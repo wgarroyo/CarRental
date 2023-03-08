@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CarRental.Contracts.Clients;
+﻿namespace CarRental.Contracts.Clients;
 
 public record AddClientRequest(
- string Email,
-string Password);
+string FirstName,
+string MiddleName,
+string LastName,
+string SocialNumberId);

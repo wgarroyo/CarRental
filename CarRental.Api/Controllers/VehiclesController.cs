@@ -1,4 +1,5 @@
 ﻿using CarRental.Application.Vehicles.Commands.AddVehicle;
+using CarRental.Application.Vehicles.Commands.RemoveVehicle;
 using CarRental.Application.Vehicles.Queries.GetVehicleById;
 using CarRental.Application.Vehicles.Queries.ListAllVehicles;
 using CarRental.Contracts.Vehicles;
@@ -46,7 +47,6 @@ public class VehiclesController : ApiController
                 title: vehicleResult.FirstError.Description);
         }
 
-
         return vehicleResult.Match(
             authResult => Ok(_mapper.Map<VehicleResponse>(vehicleResult.Value)),
             errors => Problem(errors));
@@ -72,5 +72,21 @@ public class VehiclesController : ApiController
             errors => Problem(errors));
     }
 
+    [HttpDelete()]
+    [Route("{id}")]
+    public async Task<IActionResult> RemoveAsync(Guid id)
+    {
+        var vehicleResult = await _mediator.Send(new RemoveVehicleCommand(id));
 
+        if (vehicleResult.IsError && vehicleResult.FirstError == Errors.Vehicle.NotFound)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: vehicleResult.FirstError.Description);
+        }
+
+        return vehicleResult.Match(
+            authResult => Ok(_mapper.Map<VehicleResponse>(vehicleResult.Value)),
+            errors => Problem(errors));
+    }
 }

@@ -7,4 +7,5 @@ namespace CarRental.Application.Clients.Commands.AddClient;
 public record AddClientCommand(
 string FirstName,
 string MiddleName,
-string LastName) : IRequest<ErrorOr<Client>>;
+string LastName,
+string SocialNumberId) : IRequest<ErrorOr<Client>>;

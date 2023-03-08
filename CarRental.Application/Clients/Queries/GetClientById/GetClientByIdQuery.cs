@@ -4,4 +4,4 @@ using MediatR;
 
 namespace CarRental.Application.Clients.Queries.GetClientById;
 
-public record GetClientByIdQuery(Guid id) : IRequest<ErrorOr<Client>>;
+public record GetClientByIdQuery(Guid Id) : IRequest<ErrorOr<Client>>;
