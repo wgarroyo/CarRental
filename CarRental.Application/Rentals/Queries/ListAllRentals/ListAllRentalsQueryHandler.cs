@@ -16,6 +16,11 @@ public class ListAllRentalsQueryHandler : IRequestHandler<ListAllRentalsQuery, E
 
     public async Task<ErrorOr<List<Rental>>> Handle(ListAllRentalsQuery query, CancellationToken cancellationToken)
     {
-        return await _dataContext.Rentals.ToListAsync(cancellationToken);
+        return await _dataContext
+            .Rentals
+            .Include(x => x.Vehicle)
+            .ThenInclude(x => x.VehicleBrand)
+            .Include(x => x.Client)
+            .ToListAsync(cancellationToken);
     }
 }

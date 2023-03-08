@@ -79,7 +79,7 @@ namespace CarRental.Api.Controllers
             }
 
             return clientResult.Match(
-                authResult => Ok(_mapper.Map<ClientResponse>(clientResult.Value)),
+                authResult => Ok(),
                 errors => Problem(errors));
         }
 

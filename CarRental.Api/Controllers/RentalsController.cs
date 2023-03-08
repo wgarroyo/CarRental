@@ -1,7 +1,9 @@
 ﻿using CarRental.Application.Rentals.Commands.AddRental;
+using CarRental.Application.Rentals.Commands.CancelRental;
 using CarRental.Application.Rentals.Queries.GetRentalById;
 using CarRental.Application.Rentals.Queries.ListAllRentals;
 using CarRental.Contracts.Rentals;
+using CarRental.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +27,10 @@ public class RentalsController : ApiController
     [HttpGet()]
     public async Task<IActionResult> ListAllAsync()
     {
-        var rentals = await _mediator.Send(new ListAllRentalsQuery());
+        var rentalsResult = await _mediator.Send(new ListAllRentalsQuery());
 
-        return rentals.Match(
-            authResult => Ok(_mapper.Map<List<RentalResponse>>(rentals.Value)),
+        return rentalsResult.Match(
+            authResult => Ok(_mapper.Map<List<RentalResponse>>(rentalsResult.Value)),
             errors => Problem(errors));
 
     }
@@ -37,10 +39,17 @@ public class RentalsController : ApiController
     [Route("{id}")]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
-        var rental = await _mediator.Send(new GetRentalByIdQuery(id));
+        var rentalsResult = await _mediator.Send(new GetRentalByIdQuery(id));
 
-        return rental.Match(
-            authResult => Ok(_mapper.Map<RentalResponse>(rental)),
+        if (rentalsResult.IsError && rentalsResult.FirstError == Errors.Rental.NotFound)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: rentalsResult.FirstError.Description);
+        }
+
+        return rentalsResult.Match(
+            authResult => Ok(_mapper.Map<RentalResponse>(rentalsResult.Value)),
             errors => Problem(errors));
     }
 
@@ -48,10 +57,28 @@ public class RentalsController : ApiController
     public async Task<IActionResult> AddAsync(AddRentalRequest request)
     {
         AddRentalCommand command = _mapper.Map<AddRentalCommand>(request);
-        var rental = await _mediator.Send(command);
+        var rentalsResult = await _mediator.Send(command);
 
-        return rental.Match(
-            authResult => Created(nameof(GetByIdAsync), _mapper.Map<RentalResponse>(rental)),
+        return rentalsResult.Match(
+            authResult => Created(nameof(GetByIdAsync), _mapper.Map<RentalResponse>(rentalsResult.Value)),
+            errors => Problem(errors));
+    }
+
+    [HttpDelete()]
+    [Route("{id}")]
+    public async Task<IActionResult> RemoveAsync(Guid id)
+    {
+        var rentalResult = await _mediator.Send(new CancelRentalCommand(id));
+
+        if (rentalResult.IsError && rentalResult.FirstError == Errors.Rental.NotFound)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: rentalResult.FirstError.Description);
+        }
+
+        return rentalResult.Match(
+            authResult => Ok(),
             errors => Problem(errors));
     }
 

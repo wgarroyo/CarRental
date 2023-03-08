@@ -86,7 +86,7 @@ public class VehiclesController : ApiController
         }
 
         return vehicleResult.Match(
-            authResult => Ok(_mapper.Map<VehicleResponse>(vehicleResult.Value)),
+            authResult => Ok(),
             errors => Problem(errors));
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace CarRental.Contracts.Rentals;
 public record RentalResponse(
 Guid Id,
-string VehicleType,
 string VehicleBrand,
 string VehicleDescription,
 string VehicleVin,

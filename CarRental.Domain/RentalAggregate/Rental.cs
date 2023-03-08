@@ -20,34 +20,41 @@ public sealed class Rental : AggregateRoot<RentalId>
 
     private Rental(
         RentalId rentalId,
-        VehicleId vehicleId,
-        ClientId clientId,
-        decimal price,
+        Vehicle vehicle,
+        Client client,
         DateTime from,
         DateTime to)
         : base(rentalId)
     {
-        VehicleId = vehicleId;
-        ClientId = clientId;
-        Price = price;
+        Vehicle = vehicle;
+        VehicleId = vehicle.Id;
+        Client = client;
+        ClientId = client.Id;
         From = from;
         To = to;
+        CreatedDateTime = DateTime.Now;
+        UpdatedDateTime = CreatedDateTime;
     }
 
     public static Rental Create(
-        VehicleId vehicleId,
-        ClientId clientId,
-        decimal price,
+        Vehicle vehicle,
+        Client client,
         DateTime from,
         DateTime to)
     {
         return new Rental(
             RentalId.CreateUnique(),
-            vehicleId,
-            clientId,
-            price,
+            vehicle,
+            client,
             from,
             to);
+    }
+
+    public void CalculatePrice()
+    {
+        uint totalDays = ((uint)(To - From).TotalDays);
+        decimal currentPricePerDay = Vehicle.Price;
+        Price = currentPricePerDay * totalDays;
     }
 
 #pragma warning disable CS8618
