@@ -28,17 +28,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vehicles", "Vehicles", "{2D83578A-7EC9-4760-90C2-B223E5DC7706}"
 	ProjectSection(SolutionItems) = preProject
+		AddVehicles.http = AddVehicles.http
+		GetVehiclesById.http = GetVehiclesById.http
 		ListVehicles.http = ListVehicles.http
+		RemoveVehicles.http = RemoveVehicles.http
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{7634098D-B92D-450F-AF31-5DD76D7D1C74}"
 	ProjectSection(SolutionItems) = preProject
+		GetClientsById.http = GetClientsById.http
+		AddClients.http = AddClients.http
 		ListClients.http = ListClients.http
+		RemoveClients.http = RemoveClients.http
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rentals", "Rentals", "{B11B08CB-B356-411D-9589-A50D4F6C5C7F}"
 	ProjectSection(SolutionItems) = preProject
+		AddRentals.http = AddRentals.http
+		GetRentalsById.http = GetRentalsById.http
 		ListRentals.http = ListRentals.http
+		RemoveRentals.http = RemoveRentals.http
 	EndProjectSection
 EndProject
 Global

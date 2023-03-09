@@ -1,0 +1,12 @@
+@host=https://localhost:7076
+
+POST {{host}}/rentals/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJDYXJSZW50YWwuRG9tYWluLlVzZXJBZ2dyZWdhdGUuVmFsdWVPYmplY3RzLlVzZXJJZCIsImdpdmVuX25hbWUiOiJXYWx0ZXIiLCJmYW1pbHlfbmFtZSI6IkFycm95byIsImp0aSI6ImZmMDAxNWVmLWM1ZWUtNGE0NC1hN2NjLTAxZDYzNzJkMjYxZiIsInVuaXF1ZV9uYW1lIjoiQ2FyUmVudGFsLkRvbWFpbi5Vc2VyQWdncmVnYXRlLlZhbHVlT2JqZWN0cy5Vc2VySWQiLCJleHAiOjE2NzgzMzI4NzksImlzcyI6IlJlbnRhbENhciIsImF1ZCI6IlJlbnRhbENhciJ9.cgHEz_m6tE-v1pKk0G7vbNO8CfNd_vtup3GagO738bA
+Content-Type: application/json
+
+{
+  "vehicleId": "EAB8AA26-C448-460F-AE9F-AAC0501DF836",
+  "clientId": "EAB8AA26-C448-460F-AE9F-AAC0501DF838",
+  "from": "2023-03-09T02:31:26.634Z",
+  "to": "2023-04-09T02:31:26.634Z"
+}
