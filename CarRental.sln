@@ -13,11 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRental.Domain", "CarRent
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRental.Infrastructure", "CarRental.Infrastructure\CarRental.Infrastructure.csproj", "{C300CCB7-9618-4B4E-BEF5-62A9AD81B31D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{B0BF9026-6EEA-45CF-A8EC-E2D553D3A6AB}"
-	ProjectSection(SolutionItems) = preProject
-		Api.md = Api.md
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Requests", "Requests", "{A3ACF92E-1ED3-45AA-AB61-DC82A59DFF07}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{B3BD1F72-7A03-44ED-8472-668517833EB1}"
