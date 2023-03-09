@@ -24,8 +24,4 @@
     <ProjectReference Include="..\CarRental.Infrastructure\CarRental.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validations\" />
-  </ItemGroup>
-
 </Project>
