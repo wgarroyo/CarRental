@@ -3,7 +3,6 @@ using CarRental.Application.Vehicles.Commands.RemoveVehicle;
 using CarRental.Application.Vehicles.Queries.GetVehicleById;
 using CarRental.Application.Vehicles.Queries.ListAllVehicles;
 using CarRental.Contracts.Vehicles;
-using CarRental.Domain.Common.Errors;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,13 +39,6 @@ public class VehiclesController : ApiController
     {
         var vehicleResult = await _mediator.Send(new GetVehicleByIdQuery(id));
 
-        if (vehicleResult.IsError && vehicleResult.FirstError == Errors.Vehicle.NotFound)
-        {
-            return Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: vehicleResult.FirstError.Description);
-        }
-
         return vehicleResult.Match(
             authResult => Ok(_mapper.Map<VehicleResponse>(vehicleResult.Value)),
             errors => Problem(errors));
@@ -58,15 +50,6 @@ public class VehiclesController : ApiController
         AddVehicleCommand command = _mapper.Map<AddVehicleCommand>(request);
         var vehicleResult = await _mediator.Send(command);
 
-        if (vehicleResult.IsError && (
-            vehicleResult.FirstError == Errors.VehicleType.NotFound
-            || vehicleResult.FirstError == Errors.VehicleBrand.NotFound))
-        {
-            return Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: vehicleResult.FirstError.Description);
-        }
-
         return vehicleResult.Match(
             authResult => Created(nameof(GetByIdAsync), _mapper.Map<VehicleResponse>(vehicleResult.Value)),
             errors => Problem(errors));
@@ -77,13 +60,6 @@ public class VehiclesController : ApiController
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
         var vehicleResult = await _mediator.Send(new RemoveVehicleCommand(id));
-
-        if (vehicleResult.IsError && vehicleResult.FirstError == Errors.Vehicle.NotFound)
-        {
-            return Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: vehicleResult.FirstError.Description);
-        }
 
         return vehicleResult.Match(
             authResult => Ok(),

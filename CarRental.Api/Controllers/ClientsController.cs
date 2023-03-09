@@ -3,7 +3,6 @@ using CarRental.Application.Clients.Commands.RemoveClient;
 using CarRental.Application.Clients.Queries.GetClientById;
 using CarRental.Application.Clients.Queries.ListAllClients;
 using CarRental.Contracts.Clients;
-using CarRental.Domain.Common.Errors;
 using CarRental.Domain.RentalAggregate.Entities;
 using ErrorOr;
 using MapsterMapper;
@@ -42,13 +41,6 @@ namespace CarRental.Api.Controllers
         {
             var clientResult = await _mediator.Send(new GetClientByIdQuery(id));
 
-            if (clientResult.IsError && clientResult.FirstError == Errors.Client.NotFound)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: clientResult.FirstError.Description);
-            }
-
             return clientResult.Match(
                 authResult => Ok(_mapper.Map<ClientResponse>(clientResult.Value)),
                 errors => Problem(errors));
@@ -70,13 +62,6 @@ namespace CarRental.Api.Controllers
         public async Task<IActionResult> RemoveAsync(Guid id)
         {
             var clientResult = await _mediator.Send(new RemoveClientCommand(id));
-
-            if (clientResult.IsError && clientResult.FirstError == Errors.Client.NotFound)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: clientResult.FirstError.Description);
-            }
 
             return clientResult.Match(
                 authResult => Ok(),
