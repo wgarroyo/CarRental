@@ -30,4 +30,9 @@ public sealed class User : AggregateRoot<UserId>
             email,
             password);
     }
+#pragma warning disable CS8618
+    private User()
+    {
+    }
+#pragma warning restore CS8618
 }

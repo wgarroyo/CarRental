@@ -15,14 +15,14 @@ namespace CarRental.Api.Controllers;
 [AllowAnonymous]
 public class AuthenticationController : ApiController
 {
-    private readonly ISender _sender;
+    private readonly ISender _mediator;
     private readonly IMapper _mapper;
 
     public AuthenticationController(
         ISender sender,
         IMapper mapper)
     {
-        _sender = sender;
+        _mediator = sender;
         _mapper = mapper;
     }
 
@@ -30,7 +30,7 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         RegisterCommand command = _mapper.Map<RegisterCommand>(request);
-        ErrorOr<AuthenticationResult> authResult = await _sender.Send(command);
+        ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
 
         return authResult.Match(
             authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
@@ -41,7 +41,7 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> LoginAsync(LoginRequest request)
     {
         LoginQuery loginQuery = _mapper.Map<LoginQuery>(request);
-        var authResult = await _sender.Send(loginQuery);
+        var authResult = await _mediator.Send(loginQuery);
 
         if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
         {

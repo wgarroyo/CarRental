@@ -5,25 +5,26 @@ using CarRental.Domain.Common.Errors;
 using CarRental.Domain.UserAggregate;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRental.Application.Authentication.Queries.Login;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly IUserRepository _userRepository;
+    private readonly IDataContext _dataContext = null!;
 
     public LoginQueryHandler(
-        IJwtTokenGenerator jwtTokenGenerator, 
-        IUserRepository userRepository)
+        IJwtTokenGenerator jwtTokenGenerator,
+        IDataContext dataContext)
     {
         _jwtTokenGenerator = jwtTokenGenerator;
-        _userRepository = userRepository;
+        _dataContext = dataContext;
     }
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
-        if (_userRepository.GetUserByEmail(query.Email) is not User user)
+        if (await GetUserByEmailAsync(query.Email) is not User user)
         {
             return Errors.Authentication.InvalidCredentials;
         }
@@ -37,5 +38,11 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
 
         return new AuthenticationResult(user, token);
 
+    }
+
+    private async Task<User?> GetUserByEmailAsync(string email)
+    {
+        User? user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+        return user;
     }
 }

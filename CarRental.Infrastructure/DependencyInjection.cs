@@ -26,8 +26,7 @@ public static class DependencyInjection
         );
                 
         services.AddScoped<IDataContext, CarRentalDbContext>();
-        //Delete after CQRS is implemented
-        services.AddScoped<IUserRepository, UserRepository>();
+
         return services;
     }
 

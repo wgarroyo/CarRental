@@ -52,9 +52,8 @@ public sealed class Rental : AggregateRoot<RentalId>
 
     public void CalculatePrice()
     {
-        uint totalDays = ((uint)(To - From).TotalDays);
-        decimal currentPricePerDay = Vehicle.Price;
-        Price = currentPricePerDay * totalDays;
+        uint totalDays = (uint)(To - From).TotalDays;
+        Price = Vehicle.Price * totalDays;
     }
 
 #pragma warning disable CS8618

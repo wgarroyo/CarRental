@@ -5,33 +5,43 @@ using CarRental.Domain.Common.Errors;
 using CarRental.Domain.UserAggregate;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRental.Application.Authentication.Commands.Register;
 
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly IUserRepository _userRepository;
+    private readonly IDataContext _dataContext = null!;
 
-    public RegisterCommandHandler(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository)
+    public RegisterCommandHandler(
+        IJwtTokenGenerator jwtTokenGenerator,
+        IDataContext dataContext)
     {
         _jwtTokenGenerator = jwtTokenGenerator;
-        _userRepository = userRepository;
+        _dataContext = dataContext;
     }
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        if (_userRepository.GetUserByEmail(command.Email) is not null)
+        if (await GetUserByEmailAsync(command.Email) is not null)
         {
             return Errors.User.DuplicateEmail;
         }
 
-        User user = User.Create(command.FirstName, command.LastName, command.Email, command.Password);        
+        User user = User.Create(command.FirstName, command.LastName, command.Email, command.Password);
 
-        _userRepository.Add(user);
+        _dataContext.Users.Add(user);
+        await _dataContext.CommitAsync();
 
         string token = _jwtTokenGenerator.GenerateToken(user);
 
         return new AuthenticationResult(user, token);
+    }
+
+    private async Task<User?> GetUserByEmailAsync(string email)
+    {
+        User? user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+        return user;
     }
 }
